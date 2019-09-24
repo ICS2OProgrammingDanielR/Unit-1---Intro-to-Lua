@@ -1,7 +1,7 @@
 -- Title: AreaOfRectangleAndCircle
 -- Name: Daniel Raissi
 -- Course: ICS2O/3C
--- This program...
+-- This program displays a Circle and a Rectangle whith their Area
 
 -- create my local variables
 local areaText
@@ -30,7 +30,32 @@ myRectangle.y = 20
 myRectangle.strokeWidth = 20
 
 -- set the color of the rectangle
-myRectangle:setFillColor(20/255, 20/255, 20/255)
+myRectangle:setFillColor(255/255, 255/255, 255/255)
 
 -- set the color of the border
 myRectangle:setStrokeColor(0, 0, 0)
+
+-- calculate the area
+areaOfRectangle = widthOfRectangle * heightOfRectangle
+
+-- write the area on the screen. Take into consideration the size of the font when positioing it on the screen
+areaText = display.newText("The area of this rectangle with a width of \n" ..
+	widthOfRectangle .. " and a height of " .. heightOfRectangle .. " is " ..
+	areaOfRectangle .. " pixels².", 0, 0, Arial, textSize)
+
+-- anchor the text and set its (x,y) position
+areaText.anchorX = 0
+areaText.anchorY =0
+areaText.x = 20
+areaText.y = display.contentHeight/2
+
+-- set the color of the newText
+areaText:setTextColor(0, 0, 0)
+
+-- create my local variables
+local areaText
+local textSize = 50
+local myCircle
+local myCircle
+local widthOfCircle = 350
+local heightOfCircle = 200
