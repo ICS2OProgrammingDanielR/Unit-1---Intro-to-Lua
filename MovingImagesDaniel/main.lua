@@ -1,5 +1,5 @@
 -- Title: MovingObjects
--- Name: Your Name
+-- Name: Daniel Raissi
 -- Course: ICS2O/3C
 -- This program moves a beetleship across the screen and then makes it fade out.
 
