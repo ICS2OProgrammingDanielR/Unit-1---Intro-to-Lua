@@ -49,7 +49,38 @@ local function AskQuestion()
 
 	-- create question in the text object
 	questionObject.text = randomNumber1 .. " + " .. randomNumber2 .. " = "
+
+	-- generate a random number between 1 and 2
+	randomOperator = math.random(1,3)
+
+	-- if the random operator is 1 do addition
+	if (randomOperator == 1) then
+
+		-- calculate the correct answer
+		correctAnswer = randomNumber1 - randomNumber2
+
+		-- create question in text object
+	    questionObject.text = randomNumber1 .. " - " .. randomNumber2 .. " = "
+	    
+	-- if 2 multiplication
+	elseif (randomOperator == 2) then
+        -- calculate the correct answer
+        correctAnswer = randomNumber1 * randomNumber2
+
+        -- create question in text object
+        questionObject.text = randomNumber1 .. " * " .. randomNumber2 .. " = "
+    -- if 3 divition
+    elseif ( randomOperator == 3) then
+    	-- calculate the correct answer
+        correctAnswer = randomNumber1 / randomNumber2
+
+        -- create question in text object
+        questionObject.text = randomNumber1 .. " / " .. randomNumber2 .. " = "
+    end
 end
+
+
+
 
 local function HideCorrect()
 	correctObject.isVisible = false
@@ -105,36 +136,7 @@ local function NumericFieldListener( event )
 	    end
 	end
 end
-
-local function AskQuestion()
-	-- generate a random number between 1 and 2
-	randomOperator = math.random(1,2,3)
-
-	-- if the random operator is 1 do addition
-	if (randomOperator == 1) then
-
-		-- calculate the correct answer
-		correctAnswer = randomNumber1 - randomNumber2
-
-		-- create question in text object
-	    questionObject.text = randomNumber1 .. " - " .. randomNumber2 .. " = "
-	    
-	-- if 2 multiplication
-	elseif (randomOperator == 2) then
-        -- calculate the correct answer
-        correctAnswer = randomNumber1 * randomNumber2
-
-        -- create question in text object
-        questionObject.text = randomNumber1 .. " * " .. randomNumber2 .. " = "
-    -- if 3 divition
-    elseif ( randomOperator == 3) then
-    	-- calculate the correct answer
-        correctAnswer = randomNumber1 / randomNumber2
-
-        -- create question in text object
-        questionObject.text = randomNumber1 .. " / " .. randomNumber2 .. " = "
-    end
-end
+	
 
 
 --------------------------------------------------------------------------
