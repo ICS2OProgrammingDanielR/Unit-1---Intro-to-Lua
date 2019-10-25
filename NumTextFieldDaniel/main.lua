@@ -16,24 +16,32 @@ display.setDefault("background", 255/255, 102/255, 255/255)
 
 -- create local variables
 local questionObject
+local clockText
 local correctObject
 local numericField
 local randomNumber1
 local randomNumber2
 local userAnswer
 local correctAnswer
+local correctAnswer1
 local pointsCount = 0
-local livesCount = 3
+local livesCount = 4
 local pointsText
 local totalSeconds = 10 
 local secondsLeft = 10
 local randomOperator
+local heart1
+local heart2
+local heart3
+local heart4
+local incorrectObject
+local livesText
 
 ---------------------------------------------------------------------------------
 -- SOUNDS
 ------------------------------------------------------------------------------
 
-local correctSound = audio.loadSound( "Sounds/correctSound.mp3" )
+local correctSound = audio.loadSound( "sounds/correctSound.mp3" )
 local correctSoundChannel
 
 --------------------------------------------------------------------------
@@ -72,10 +80,11 @@ local function AskQuestion()
     -- if 3 divition
     elseif ( randomOperator == 3) then
     	-- calculate the correct answer
-        correctAnswer = randomNumber1 / randomNumber2
+    	correctAnswer1 = randomNumber1 * randomNumber2
+        correctAnswer = correctAnswer1 / randomNumber1
 
         -- create question in text object
-        questionObject.text = randomNumber1 .. " / " .. randomNumber2 .. " = "
+        questionObject.text = correctAnswer1 .. " / " .. randomNumber2 .. " = "
     end
 end
 
@@ -87,28 +96,6 @@ local function HideCorrect()
 	AskQuestion()
 end
 
-local function NumericFieldListener( event )
-
-	-- User begins editing "numericField"
-	if ( event.phase == "began" ) then
-
-		-- clear text field
-		event.target.text = ""
-	
-	elseif ( event.phase == "submitted" ) then
-
-		-- when the answer is submitted (enter key is pressed) set user input to user's answer
-		userAnswer = tonumber(event.target.text)
-
-		-- if the user's answer and the correct answer are the same
-		if (userAnswer == correctAnswer) then
-			correctObject.isVisible = true
-			timer.performWithDelay(2000, HideCorrect)
-			event.target.text = ""
-		end
-	end
-end
-
 
 local function HideIncorrect()
 	incorrectObject.isVisible = false
@@ -117,27 +104,61 @@ end
 
 local function NumericFieldListener( event )
 
-	-- User begins editing "numericField"
+	-- user begins editing
 	if ( event.phase == "began" ) then
 
-		-- clear text field
-		event.target.text = ""
-	
-	elseif ( event.phase == "submitted" ) then
+		-- clear text 
+		field.event.target.text =  ""
 
-		-- when the answer is submitted (enter key is pressed) set user input to user's answer
+	elseif (event.phase == "submitted") then
 		userAnswer = tonumber(event.target.text)
 
-		-- if the user's answer and the correct answer is the same
-		if  (userAnswer == correctAnswer) then
+		-- when answer is submitted set user input to user's answer
+		if (userAnswer == correctAnswer) then
+			incorrectObject.isVisible = false
 			correctObject.isVisible = true
-			timer.performWithDelay(2000, HideCorrect)
+			timer.performWithDelay(1000, HideCorrect)
 			event.target.text = ""
-	    end
+			pointsCount = pointsCount + 1
+			pointsObject.text = "Points = " .. pointsCount
+			correctSoundChannel = audio.play(correctSound)
+			secondsLeft = 10
+			if (points == 5) then
+
+				-- hide everything
+				incorrectObject.isVisible = false
+				correctObject.isVisible = false
+				numericField.isVisible = false
+				questionObject.isVisible = false
+				pointsObject.isVisible = false
+				clockText.isVisible = false
+				EndTimer()
+				bkg.isVisible = false
+				--display you win
+				winObject.isVisible = true
+
+	
+local function UpdateTime()
+
+	-- get rid of secondsLeft
+	secondsLeft = secondsLeft - 1
+
+	-- display the number of seconds left in the clock object
+	clockText.text = secondsLeft .. ""
+
+	if (secondsLeft == 0 ) then
+		-- reset the number of seconds left
+		secondsLeft = totalSeconds
+		lives = lives - 1
+
+		-- if no lives left play lose sound show lose image and get rid of timer
+		if (lives == 2) then
+		heart2.isVisible = false
+		elseif (lives == 1) then
+			heart1.isVisible = false
+		end
 	end
 end
-	
-
 
 --------------------------------------------------------------------------
 -- OBJECT CREATION
@@ -158,27 +179,28 @@ numericField = native.newTextField( display.contentWidth/2, display.contentHeigh
 -- add the event listener for the numeric field
 numericField:addEventListener( "userInput", NumericFieldListener )
 
--- displays a question and sets the color
-questionObject = display.newText( "", display.contentWidth/3, display.contentHeight/2, nil, 50)
-questionObject:setTextColor(0/255, 128/255, 255/255)
-
--- create the correct text objest and make it invisible
-incorrectObject = display.newText( "Incorrect!", display.contentWidth/2, display.contentHeight*2/3, nil, 50 )
-incorrectObject:setTextColor(0/255, 128/255, 255/255)
-incorrectObject.isVisible = false
-
--- Create a numeric field
-numericField = native.newTextField( display.contentWidth/2, display.contentHeight/2, 150, 80 )
-
--- add the event listener for the numeric field
-numericField:addEventListener( "userInput", NumericFieldListener )
+-- display the amount of points as a text object
+pointsText = display.newText("Points = " .. pointsCount, 850, 40, nil, 50)
 
 -- display the amount of points as a text object
-pointsText = display.newText("Points = " .. pointsCount, 850, 50, nil, 50)
+livesText = display.newText("Lives left = " .. livesCount, 150, 40, nil, 50)
 
--- display the amount of points as a text object
-pointsText = display.newText("Lives left = " .. livesCount, 150, 50, nil, 50)
+-- create the hearts 
+heart1 = display.newImageRect("Images/heart.png", 100, 100)
+heart1.x = display.contentWidth * 7 / 8
+heart1.y = display.contentHeight * 1 / 7
 
+heart2 = display.newImageRect("Images/heart.png", 100, 100)
+heart2.x = display.contentWidth * 6 / 8
+heart2.y = display.contentHeight * 1 / 7
+
+heart3 = display.newImageRect("Images/heart.png", 100, 100)
+heart3.x = display.contentWidth * 5 / 8
+heart3.y = display.contentHeight * 1 / 7
+
+heart4 = display.newImageRect("Images/heart.png", 100, 100)
+heart4.x = display.contentWidth * 4 / 8
+heart4.y = display.contentHeight * 1 / 7
 --------------------------------------------------------------------------
 -- FUNCTION CALLS
 --------------------------------------------------------------------------
