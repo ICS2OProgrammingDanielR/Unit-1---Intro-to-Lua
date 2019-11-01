@@ -108,7 +108,7 @@ local function NumericFieldListener( event )
 	if ( event.phase == "began" ) then
 
 		-- clear text 
-		field.event.target.text =  ""
+		event.target.text =  ""
 
 	elseif (event.phase == "submitted") then
 		userAnswer = tonumber(event.target.text)
@@ -136,6 +136,33 @@ local function NumericFieldListener( event )
 				bkg.isVisible = false
 				--display you win
 				winObject.isVisible = true
+				local winBkg = display.newImageRect("Images/winBkg.png", display.contentWidth, display.contentHeight)
+				local winSound = audio.loadSound("Sounds/clappingSound.aud")
+				local correctSoundChannel
+				winBkg.x = display.contentCenterX
+				winBkg.y = display.contentCenterY
+			end
+
+		else
+		    InncorrectObject.isVisible = true
+		    correctObject.isVisible = false
+		    timer.performWithDelay(2000, HideIncorrect)
+		    event.target.text = ""
+		    if (lives == 3) then
+		    	heart4.isVisible = false
+		    elseif (lives == 2) then
+		    	heart3.isVisible = false
+		    elseif (lives == 1) then
+		    	heart2.isVisible = false
+            elseif (lives == 0) then
+		    	heart1.isVisible = false
+		    end
+		    secondsleft = 10
+		    wrongSoundChannel = audio.play(wrongSound)
+		end
+	end
+end
+
 
 	
 local function UpdateTime()
@@ -173,8 +200,10 @@ correctObject = display.newText( "Correct!", display.contentWidth/2, display.con
 correctObject:setTextColor(0/255, 128/255, 255/255)
 correctObject.isVisible = false
 
--- Create a numeric field
-numericField = native.newTextField( display.contentWidth/2, display.contentHeight/2, 150, 80 )
+-- create the correct text objest and make it invisible
+correctObject = display.newText( "Incorrect, try again", display.contentWidth/2, display.contentHeight*2/3, nil, 50 )
+correctObject:setTextColor(0/255, 128/255, 255/255)
+correctObject.isVisible = false
 
 -- add the event listener for the numeric field
 numericField:addEventListener( "userInput", NumericFieldListener )

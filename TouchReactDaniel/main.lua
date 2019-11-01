@@ -1,7 +1,7 @@
 -- Title: TouchAndReact
 -- Name: Your Name
 -- Course: ICS2O/3C
--- This program does somthing when i click on a button
+-- This program does somthing when click on a button
 
 -- hide status bar
 display.setStatusBar(display.HiddenStatusBar)
@@ -22,3 +22,43 @@ redButton.y = display.contentHeight/2
 redButton.isVisible = false
 
 -- create text object, set its position 
+local textObject = display.newText("Clicked!", 0, 0, nil, 50)
+textObject.x = display.contentWidth/2
+textObject.y = display.contentHeight/3
+textObject:setTextColor (0.69, 4.20, 0.69)
+textObject.isVisible = false
+
+
+
+local function BlueButtonListener(touch)
+	if (touch.phase == "began") then
+		blueButton.isVisible = false
+		redButton.isVisible = true
+		textObject.isVisible = true
+    end
+
+    if (touch.phase == "ended") then
+    	blueButton.isVisible = true
+    	redButton.isVisible = false
+    	textObject.isVisible = false
+    end
+end
+
+
+local function RedButtonListener(touch)
+	if (touch.phase == "began") then
+		blueButton.isVisible = true
+		redButton.isVisible = false
+		textObject.isVisible = false
+    end
+
+    if (touch.phase == "ended") then
+    	blueButton.isVisible = false
+    	redButton.isVisible = true
+    	textObject.isVisible = true
+    end
+end
+
+-- add the rep listener to each object
+blueButton:addEventListener("touch", BlueButtonListener)
+redButton:addEventListener("touch", RedButtonListener)
