@@ -36,6 +36,7 @@ local heart3
 local heart4
 local incorrectObject
 local livesText
+local countDownTimer
 
 ---------------------------------------------------------------------------------
 -- SOUNDS
@@ -120,7 +121,7 @@ local function NumericFieldListener( event )
 			timer.performWithDelay(1000, HideCorrect)
 			event.target.text = ""
 			pointsCount = pointsCount + 1
-			pointsObject.text = "Points = " .. pointsCount
+			pointsText.text = "Points = " .. pointsCount
 			correctSoundChannel = audio.play(correctSound)
 			secondsLeft = 10
 			if (points == 5) then
@@ -130,21 +131,22 @@ local function NumericFieldListener( event )
 				correctObject.isVisible = false
 				numericField.isVisible = false
 				questionObject.isVisible = false
-				pointsObject.isVisible = false
+				pointsText.isVisible = false
 				clockText.isVisible = false
 				EndTimer()
 				bkg.isVisible = false
 				--display you win
 				winObject.isVisible = true
-				local winBkg = display.newImageRect("Images/winBkg.png", display.contentWidth, display.contentHeight)
+				local winBkg = display.newImageRect("Images/winBkg.png", display.contentWidth/2, display.contentHeight/2)
 				local winSound = audio.loadSound("Sounds/clappingSound.aud")
 				local correctSoundChannel
 				winBkg.x = display.contentCenterX
 				winBkg.y = display.contentCenterY
+				winBkg.isVisible = true
 			end
 
 		else
-		    InncorrectObject.isVisible = true
+		    incorrectObject.isVisible = true
 		    correctObject.isVisible = false
 		    timer.performWithDelay(2000, HideIncorrect)
 		    event.target.text = ""
@@ -177,14 +179,21 @@ local function UpdateTime()
 		-- reset the number of seconds left
 		secondsLeft = totalSeconds
 		lives = lives - 1
+		livesText.text = "Lives = " .. lives
+		AskQuestion()
 
 		-- if no lives left play lose sound show lose image and get rid of timer
-		if (lives == 2) then
+		if (livesText == 2) then
 		heart2.isVisible = false
-		elseif (lives == 1) then
+		elseif (livesText == 1) then
 			heart1.isVisible = false
 		end
 	end
+end
+
+local function StartTimer()
+	-- create a countdown timer that loops indenfidly
+	countDownTimer = timer.performWithDelay( 1000, UpdateTime, 0 )
 end
 
 --------------------------------------------------------------------------
@@ -200,10 +209,15 @@ correctObject = display.newText( "Correct!", display.contentWidth/2, display.con
 correctObject:setTextColor(0/255, 128/255, 255/255)
 correctObject.isVisible = false
 
+
+
 -- create the correct text objest and make it invisible
-correctObject = display.newText( "Incorrect, try again", display.contentWidth/2, display.contentHeight*2/3, nil, 50 )
-correctObject:setTextColor(0/255, 128/255, 255/255)
-correctObject.isVisible = false
+incorrectObject = display.newText( "Incorrect, try again", display.contentWidth/2, display.contentHeight*2/3, nil, 50 )
+incorrectObject:setTextColor(0/255, 128/255, 255/255)
+incorrectObject.isVisible = false
+
+numericField = native.newTextField( display.contentWidth/2, display.contentHeight/2, 150, 80 )
+numericField.inputType = "number"
 
 -- add the event listener for the numeric field
 numericField:addEventListener( "userInput", NumericFieldListener )
